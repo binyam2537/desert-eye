@@ -1,0 +1,8 @@
+Computer vision: software that understands images and video
+Digital twin: live virtual copy of a physical system
+Acoustic sensing: microphones and vibration sensors that detect events by sound
+Large language models
+Drones
+Satellite imagery
+Edge AI: AI running on cheap devices without the cloud
+Blockchain
