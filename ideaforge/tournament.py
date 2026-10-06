@@ -18,16 +18,27 @@ K = 32
 START = 1200.0
 
 
+def _gates(run: Path) -> list[str]:
+    """Default gates plus any challenge-specific ones listed in runs/<run>/gates.json."""
+    extra = load(run / "gates.json") if (run / "gates.json").exists() else []
+    return GATES + [g for g in extra if g not in GATES]
+
+
+def _panel(run: Path) -> list[dict]:
+    """Judge personas: runs/<run>/judges.json if present, else the default lay panel."""
+    return load(run / "judges.json") if (run / "judges.json").exists() else JUDGE_PANEL
+
+
 def survivors(run: Path) -> dict:
     ideas = {i["id"]: i for i in load_jsonl(run / "ideas.dedup.jsonl")}
     crit = {c["id"]: c for c in load_jsonl(run / "critique.jsonl")}
     missing = sorted(set(ideas) - set(crit))
     if missing:
         raise SystemExit(f"critique.jsonl is missing {len(missing)} ideas, e.g. {missing[:5]}")
-    keep, killed = [], []
+    keep, killed, gates = [], [], _gates(run)
     for iid, idea in ideas.items():
         c = crit[iid]
-        failed = [g for g in GATES if not c.get("gates", {}).get(g, False)]
+        failed = [g for g in gates if not c.get("gates", {}).get(g, False)]
         # The critic may reframe a strong idea that was pitched too technically.
         idea = {**idea, **{k: v for k, v in (c.get("rewrite") or {}).items() if v}, "critique": c}
         (killed if failed else keep).append((idea, failed))
@@ -79,9 +90,11 @@ def pair(run: Path, seed: int = 0) -> dict:
         pool.remove(b)
         matches.append((a, b))
     rnd = st["rounds"] + 1
+    panel = _panel(run)
+    st["panel"] = [j["name"] for j in panel]
     out = []
     for n, (a, b) in enumerate(matches, 1):
-        judge = JUDGE_PANEL[(n + rnd) % len(JUDGE_PANEL)]
+        judge = panel[(n + rnd) % len(panel)]
         for order_ in ("AB", "BA"):
             x, y = (a, b) if order_ == "AB" else (b, a)
             out.append({"match": f"R{rnd}M{n}", "order": order_, "A": x, "B": y, "judge": judge,

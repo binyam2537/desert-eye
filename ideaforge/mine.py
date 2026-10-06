@@ -67,6 +67,11 @@ class Space:
             prod = self.Bt[lo:lo + 64, None, :] * self.Bx[None, :, :]   # t x X x B
             best = prod.max(axis=2)
             self.R[lo:lo + 64] = np.clip(best + 0.15 * (prod.sum(axis=2) - best), 0, 1)
+        # Optional per-topic `theme_fit` (0-1) from the cards: off-theme topics fade out,
+        # clearly off-theme ones (< 0.25) are never seeded.
+        fit = np.array([float(self.cards["items"][t].get("theme_fit", 1.0)) for t in self.T], dtype=np.float32)
+        self.fit = np.where(fit < 0.25, 0.0, 0.4 + 0.6 * fit)
+        self.R *= self.fit[:, None]
         self.C = self.Et @ self.Ex.T                                # semantic closeness
         self.Cpct = _pct(self.C)
         self.S = 1.0 - self.Cpct                                    # surprise
@@ -154,7 +159,7 @@ def _cands_combo(sp: Space):
     out = []
     for ti in range(len(sp.T)):
         need = sp.Bt[ti]
-        if need.sum() == 0:
+        if need.sum() == 0 or sp.fit[ti] == 0:
             continue
         top = [int(x) for x in np.argsort(-sp.R[ti])[:8] if sp.R[ti, x] >= 0.25]
         for i, a in enumerate(top):
@@ -183,7 +188,7 @@ def _cands_stack(sp: Space):
         need = sp.Bt.sum(axis=1)
         need[need == 0] = 1.0
         cov = np.minimum(sp.Bt, both[None, :]).sum(axis=1) / need
-        score = cov * (0.5 + 0.5 * (sp.S[:, a] + sp.S[:, b]) / 2)
+        score = cov * (0.5 + 0.5 * (sp.S[:, a] + sp.S[:, b]) / 2) * sp.fit
         for ti in np.argsort(-score)[:4]:
             if cov[ti] > 0:
                 out.append((float(score[ti]), {"topic": int(ti), "techs": [a, b]}))

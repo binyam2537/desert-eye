@@ -4,7 +4,7 @@ Input: `runs/<run>/ideas.dedup.jsonl`.
 Output: one line per idea in `runs/<run>/critique.jsonl`; then
 `python -m ideaforge survivors --run runs/<run>`.
 
-Read `data/brief.md` first. Be a harsh, fair critic. Expect to kill **half or more**. A smaller set of strong ideas
+Read `data/brief.md` (plus every file in `data/private/` and `runs/<run>/addendum.md` if they exist — they are confidential and take precedence) first. Be a harsh, fair critic. Expect to kill **half or more**. A smaller set of strong ideas
 beats a long list. Judge the idea, not the writing — but see *reframe* below.
 
 ## Gates (all must be `true` to survive)

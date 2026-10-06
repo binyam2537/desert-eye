@@ -3,7 +3,7 @@
 Input: a batch of seeds from `runs/<run>/seeds.md` (or `seeds.json`).
 Output: lines appended to `runs/<run>/ideas.jsonl`.
 
-Read `data/brief.md` first — audience, constraints and what wins.
+Read `data/brief.md` (plus every file in `data/private/` and `runs/<run>/addendum.md` if they exist — they are confidential and take precedence) first — audience, constraints and what wins.
 
 ## Who these ideas are for
 

@@ -4,6 +4,8 @@ Input: `runs/<run>/matches-r<N>.json` (written by `python -m ideaforge pair`).
 Output: the same file with `winner` (`"A"`, `"B"` or `"tie"`) and `reason` filled in on
 every row; then `python -m ideaforge record --run runs/<run> --round <N>`.
 
+Read `runs/<run>/addendum.md` first if it exists (confidential challenge context).
+
 Each match appears twice with A and B swapped. Judge each row **independently** — don't
 look at the other order's verdict. The scorer turns a split verdict into a draw, which
 cancels any bias towards whichever idea is shown first.

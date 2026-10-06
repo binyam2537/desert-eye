@@ -2,7 +2,7 @@
 
 Input: `runs/<run>/items.json` (every topic and tech, with optional description and the
 heading/group it came from), `runs/<run>/notes.json` (context sentences found in the
-lists) and `data/brief.md`.
+lists) and `data/brief.md` (plus every file in `data/private/` and `runs/<run>/addendum.md` if they exist — they are confidential and take precedence).
 Output: `runs/<run>/cards.json`, validated by `python -m ideaforge check --run runs/<run>`.
 
 The two lists rarely mention each other, so the link between them has to be made

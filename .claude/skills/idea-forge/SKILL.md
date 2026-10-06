@@ -12,7 +12,11 @@ Prompts for each LLM stage live in `prompts/`. Read the one for a stage before d
 Setup (once per container): `uv venv .venv && uv pip install --python .venv/bin/python -r requirements.txt`.
 Use `PY=.venv/bin/python`. A run lives in `runs/<name>/` (gitignored); default name `rta`.
 
-Always read `data/brief.md` before stages 1–4. If it has unknowns that would change
+Always read `data/brief.md` before stages 1–4, plus any confidential context in
+`data/private/` (gitignored — never commit it, never paste it into web searches).
+Challenge-specific settings live in the run folder, also gitignored: `addendum.md` (extra
+instructions/fields), `judges.json` (judge personas: `[{"name", "lens"}]`) and `gates.json`
+(extra critique gate names). Topic cards may carry `theme_fit` (0–1) to fade off-theme topics. If the brief has unknowns that would change
 which ideas win (judging criteria, tracks), ask the user once, then proceed.
 
 ## Pipeline

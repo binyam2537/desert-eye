@@ -12,8 +12,8 @@ def report(run: Path, top: int = 5) -> Path:
     seeds = {s["id"]: s for s in load(run / "seeds.json")}
     ranked = sorted(((i, r) for i, r in st["ratings"].items() if i in ideas), key=lambda kv: -kv[1])
     lines = [f"# Top {top} ideas", "",
-             f"Ranked by a {st['rounds']}-round pairwise tournament judged by a simulated "
-             "non-technical panel (investor, policymaker, journalist, everyday user).", ""]
+             f"Ranked by a {st['rounds']}-round pairwise tournament (every match judged twice, "
+             f"order swapped) by a simulated panel: {', '.join(st.get('panel', ['lay panel']))}.", ""]
     for rank, (iid, rating) in enumerate(ranked[:top], 1):
         i = ideas[iid]
         s = seeds.get(i.get("seed_id"), {})
@@ -25,6 +25,11 @@ def report(run: Path, top: int = 5) -> Path:
                            ("first_demo", "First demo"), ("phases", "Roadmap")):
             if i.get(key):
                 lines.append(f"**{label}:** {i[key]}  ")
+        fit = i.get("challenge_fit")
+        if isinstance(fit, dict):
+            lines.append("**Challenge fit:** " + "; ".join(f"{k}: {v}" for k, v in fit.items()) + "  ")
+        elif fit:
+            lines.append(f"**Challenge fit:** {fit}  ")
         c = i.get("critique", {})
         if c.get("prior_art"):
             lines.append(f"**Closest existing work:** {c['prior_art']}  ")
