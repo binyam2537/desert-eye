@@ -29,8 +29,11 @@ truly can't separate them.
 
 ## Efficiency
 
-Rows can be judged in parallel sub-agents (e.g. one per judge). Keep every row's
-`match`, `order`, `A`, `B` untouched.
+Give the `AB` rows and the `BA` rows to **two different sub-agents** (split the file by
+`order`, judge, merge back). One agent judging both orders back-to-back tends to copy its
+first verdict, which defeats the order swap: in testing that gave 0 split verdicts in 12
+matches, versus 1–3 per round with separate agents. Keep every row's `match`, `order`,
+`A`, `B` untouched.
 
 ## How many rounds
 
