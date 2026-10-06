@@ -107,10 +107,15 @@ def pair(run: Path, seed: int = 0) -> dict:
 
 
 def _pitch(idea: dict) -> str:
-    """Only what a non-technical audience would hear: no metrics, no seed metadata."""
+    """What a pitch audience would hear: no scores, no seed metadata."""
     keys = [("title", ""), ("one_liner", ""), ("problem", "Problem: "), ("concept", "Idea: "),
-            ("impact", "Impact: ")]
-    return "\n".join(f"{p}{idea[k]}" for k, p in keys if idea.get(k))
+            ("impact", "Impact: "), ("first_demo", "Demo: ")]
+    lines = [f"{p}{idea[k]}" for k, p in keys if idea.get(k)]
+    # Challenge-specific substance (e.g. connectivity, automation level) for expert judges.
+    fit = idea.get("challenge_fit")
+    if isinstance(fit, dict):
+        lines += [f"{k}: {v}" for k, v in fit.items() if v]
+    return "\n".join(lines)
 
 
 def record(run: Path, rnd: int) -> dict:
