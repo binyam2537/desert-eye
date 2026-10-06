@@ -41,7 +41,7 @@ def main() -> None:
     p.add_argument("--seed", type=int, default=0)
     p = cmd("dedupe")
     p.add_argument("--model", default=DEFAULT_MODEL)
-    p.add_argument("--threshold", type=float, default=0.86)
+    p.add_argument("--threshold", type=float, default=0.78)
     cmd("survivors")
     p = cmd("pair")
     p.add_argument("--seed", type=int, default=0)
